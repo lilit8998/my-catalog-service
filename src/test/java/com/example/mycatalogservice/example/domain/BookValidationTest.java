@@ -8,7 +8,9 @@ import jakarta.validation.ValidatorFactory;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -31,11 +33,14 @@ public class BookValidationTest {
 
     @Test
     void whenIsbnNotDefinedThenValidationFails() {
-        var book = new Book(null, "Title", "Author", 9.90);
+        var book = new Book("", "Title", "Author", 9.90);
         Set<ConstraintViolation<Book>> violations = validator.validate(book);
-        assertThat(violations).hasSize(1);
-        assertThat(violations.iterator().next().getMessage())
-                .isEqualTo("The book ISBN must be defined.");
+        assertThat(violations).hasSize(2);
+        List<String> constraintViolationMessages = violations.stream()
+                .map(ConstraintViolation::getMessage).collect(Collectors.toList());
+        assertThat(constraintViolationMessages)
+                .contains("The book ISBN must be defined.")
+                .contains("The ISBN format must be valid.");
     }
 
     @Test
@@ -75,11 +80,20 @@ public class BookValidationTest {
     }
 
     @Test
+    void whenPriceDefinedButZeroThenValidationFails() {
+        var book = new Book("1234567890", "Title", "Author", 0.0);
+        Set<ConstraintViolation<Book>> violations = validator.validate(book);
+        assertThat(violations).hasSize(1);
+        assertThat(violations.iterator().next().getMessage())
+                .isEqualTo("The book price must be greater than zero.");
+    }
+
+    @Test
     void whenPriceDefinedButNegativeThenValidationFails() {
         var book = new Book("1234567890", "Title", "Author", -9.90);
         Set<ConstraintViolation<Book>> violations = validator.validate(book);
         assertThat(violations).hasSize(1);
         assertThat(violations.iterator().next().getMessage())
-                .isEqualTo("The book price must be greater than or equal to 0.");
+                .isEqualTo("The book price must be greater than zero.");
     }
 }
