@@ -14,7 +14,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class BookValidationTest {
 
-
     private static Validator validator;
 
     @BeforeAll
@@ -32,7 +31,7 @@ public class BookValidationTest {
 
     @Test
     void whenIsbnNotDefinedThenValidationFails() {
-        var book = new Book("", "Title", "Author", 9.90);
+        var book = new Book(null, "Title", "Author", 9.90);
         Set<ConstraintViolation<Book>> violations = validator.validate(book);
         assertThat(violations).hasSize(1);
         assertThat(violations.iterator().next().getMessage())
