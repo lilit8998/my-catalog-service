@@ -20,7 +20,6 @@ public class BookServiceTest {
 
     @InjectMocks
     private BookService bookService;
-
     @Test
     void whenBookToCreateAlreadyExistsThenThrows() {
         var bookIsbn = "1234561232";
