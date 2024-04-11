@@ -35,9 +35,12 @@ public class BookValidationTest {
     void whenIsbnNotDefinedThenValidationFails() {
         var book = new Book("", "Title", "Author", 9.90);
         Set<ConstraintViolation<Book>> violations = validator.validate(book);
-        assertThat(violations).hasSize(1);
-        assertThat(violations.iterator().next().getMessage())
-                .isEqualTo("The book ISBN must be defined.");
+        assertThat(violations).hasSize(2);
+        List<String> constraintViolationMessages = violations.stream()
+                .map(ConstraintViolation::getMessage).collect(Collectors.toList());
+        assertThat(constraintViolationMessages)
+                .contains("The book ISBN must be defined.")
+                .contains("The ISBN format must be valid.");
     }
 
     @Test
