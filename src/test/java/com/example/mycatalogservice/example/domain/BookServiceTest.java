@@ -29,7 +29,7 @@ public class BookServiceTest {
         when(bookRepository.existsByIsbn(bookIsbn)).thenReturn(true);
         assertThatThrownBy(() -> bookService.addBookToCatalog(bookToCreate))
                 .isInstanceOf(BookAlreadyExistsException.class)
-                .hasMessageEndingWith("already exists"); // Adjusted assertion
+                .hasMessageEndingWith("already exists");
     }
 
     @Test
@@ -38,7 +38,7 @@ public class BookServiceTest {
         when(bookRepository.findByIsbn(anyString())).thenReturn(Optional.empty());
         assertThatThrownBy(() -> bookService.viewBookDetails(bookIsbn))
                 .isInstanceOf(BookNotFoundException.class)
-                .hasMessageEndingWith("was not found"); // Adjusted assertion
+                .hasMessageEndingWith("was not found");
     }
 
 }
