@@ -1,16 +1,17 @@
 package com.example.mycatalogservice.example.domain;
 
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import com.example.domain.Book;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
+
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -85,7 +86,7 @@ public class BookValidationTest {
         Set<ConstraintViolation<Book>> violations = validator.validate(book);
         assertThat(violations).hasSize(1);
         assertThat(violations.iterator().next().getMessage())
-                .isEqualTo("The book price must be greater than zero.");
+                .isEqualTo("The book price must be greater than zero");
     }
 
     @Test
@@ -94,6 +95,6 @@ public class BookValidationTest {
         Set<ConstraintViolation<Book>> violations = validator.validate(book);
         assertThat(violations).hasSize(1);
         assertThat(violations.iterator().next().getMessage())
-                .isEqualTo("The book price must be greater than zero.");
+                .isEqualTo("The book price must be greater than zero");
     }
 }
