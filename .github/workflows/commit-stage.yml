@@ -1,3 +1,9 @@
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+
+# This workflow uses actions that are not certified by GitHub.
 # They are provided by a third-party and are governed by
 # separate terms of service, privacy policy, and support
 # documentation.
@@ -75,11 +81,10 @@ jobs:
         run: chmod +x gradlew
 
       - name: Build container image
-        run: |
-          chmod +x gradlew
-          ./gradlew bootBuildImage --imageName my-registry.com/my-app:${{ env.VERSION }}        
-          
-          - name: OCI image vulnerability scanning
+        run: ./gradlew bootBuildImage --imageName my-registry.com/my-app:${{ env.VERSION }}
+
+
+      - name: OCI image vulnerability scanning
         uses: anchore/scan-action@v3
         with:
           image: my-registry.com/my-app:${{ env.VERSION }}
