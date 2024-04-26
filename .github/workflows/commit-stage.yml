@@ -83,12 +83,14 @@ jobs:
         run: chmod +x gradlew
 
       - name: Build container image
-        run: ./gradlew bootBuildImage --imageName ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.VERSION }}
+        run: |
+          chmod +x gradlew
+          ./gradlew bootBuildImage --imageName my-registry.com/my-app:${{ env.VERSION }}
 
       - name: OCI image vulnerability scanning
         uses: anchore/scan-action@v3
         with:
-          image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.VERSION }}
+          image: my-registry.com/my-app:${{ env.VERSION }}
           fail-build: false
           severity-cutoff: high
 
@@ -100,9 +102,10 @@ jobs:
       - name: Log into container registry
         uses: docker/login-action@v3
         with:
-          registry: ${{ env.REGISTRY }}
+          registry: my-registry.com
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Publish container image
-        run: docker push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.VERSION }}
+        run: docker push my-registry.com/my-app:${{ env.VERSION }}
+
