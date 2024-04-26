@@ -59,48 +59,47 @@ jobs:
             kubeval --strict -d k8s
 
   package:
-    name: Package and Publish
-    needs: [ build ]
-    runs-on: ubuntu-22.04
-    permissions:
-      contents: read
-      packages: write
-      security-events: write
-    steps:
-      - name: Checkout source code
-        uses: actions/checkout@v4
+      name: Build and Publish
+      runs-on: ubuntu-latest
+      permissions:
+        contents: read
+        packages: write
+        security-events: write
+      steps:
+        - name: Checkout source code
+          uses: actions/checkout@v4
 
-      - name: Set up JDK
-        uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: 17
-          cache: gradle
+        - name: Set up JDK
+          uses: actions/setup-java@v4
+          with:
+            distribution: temurin
+            java-version: 17
+            cache: gradle
 
-      - name: Make Gradlew executable
-        run: chmod +x gradlew
+        - name: Make Gradlew executable
+          run: chmod +x gradlew
 
-      - name: Build container image
-        run: ./gradlew bootBuildImage --imageName my-registry.com/my-app:${{ env.VERSION }} --stacktrace --info --scan
+        - name: Build container image
+          run: ./gradlew bootBuildImage --imageName my-registry.com/my-app:${{ env.VERSION }}
 
-      - name: OCI image vulnerability scanning
-        uses: anchore/scan-action@v3
-        with:
-          image: my-registry.com/my-app:${{ env.VERSION }}
-          fail-build: false
-          severity-cutoff: high
+        - name: OCI image vulnerability scanning
+          uses: anchore/scan-action@v3
+          with:
+            image: my-registry.com/my-app:${{ env.VERSION }}
+            fail-build: false
+            severity-cutoff: high
 
-      - name: Upload vulnerability report
-        uses: github/codeql-action/upload-sarif@v3
-        with:
-          sarif_file: path/to/your/sarif_file.sarif
+        - name: Upload vulnerability report
+          uses: github/codeql-action/upload-sarif@v3
+          with:
+            sarif_file: path/to/your/sarif_file.sarif
 
-      - name: Log into container registry
-        uses: docker/login-action@v3
-        with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+        - name: Log into container registry
+          uses: docker/login-action@v3
+          with:
+            registry: ${{ env.REGISTRY }}
+            username: ${{ github.actor }}
+            password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Publish container image
-        run: docker push my-registry.com/my-app:${{ env.VERSION }}
+        - name: Publish container image
+          run: docker push my-registry.com/my-app:${{ env.VERSION }}
