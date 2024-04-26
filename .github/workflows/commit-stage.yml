@@ -7,7 +7,6 @@
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-java-with-gradle
 
 name: Commit Stage
-
 on: push
 
 jobs:
@@ -57,7 +56,6 @@ jobs:
 
   package:
     name: Package and Publish
-    if: ${{ github.ref == 'refs/heads/master' }}
     needs: [ build ]
     runs-on: ubuntu-22.04
     permissions:
@@ -67,34 +65,38 @@ jobs:
     steps:
       - name: Checkout source code
         uses: actions/checkout@v4
-      - name: Set up JDK 21
+
+      - name: Set up JDK
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: 17
           cache: gradle
+
+      - name: Make Gradlew executable
+        run: chmod +x gradlew
+
       - name: Build container image
-        run: |
-          chmod +x gradlew
-          ./gradlew bootBuildImage \
-            --imageName ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.VERSION }}
+        run: ./gradlew bootBuildImage --imageName my-registry.com/my-app:${{ env.VERSION }}
+
       - name: OCI image vulnerability scanning
         uses: anchore/scan-action@v3
-        id: scan
         with:
-          image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.VERSION }}
+          image: my-registry.com/my-app:${{ env.VERSION }}
           fail-build: false
           severity-cutoff: high
+
       - name: Upload vulnerability report
-        uses: github/codeql-action/upload-sarif@v2
-        if: success() || failure()
+        uses: github/codeql-action/upload-sarif@v3
         with:
-          sarif_file: ${{ steps.scan.outputs.sarif }}
+          sarif_file: path/to/your/sarif_file.sarif
+
       - name: Log into container registry
         uses: docker/login-action@v3
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Publish container image
-        run: docker push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.VERSION }}
+        run: docker push my-registry.com/my-app:${{ env.VERSION }}
