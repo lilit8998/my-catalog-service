@@ -16,7 +16,7 @@ repositories {
 }
 
 configurations {
-    compileOnly {
+    compileOnly{
         extendsFrom annotationProcessor
     }
 }
@@ -45,7 +45,7 @@ tasks.named('test') {
     useJUnitPlatform()
 }
 
-bootRun {
+bootRun{
     systemProperty 'spring.profiles.active', 'testdata'
 }
 
@@ -55,6 +55,7 @@ dependencyManagement {
         mavenBom "org.testcontainers:testcontainers-bom:${testcontainersVersion}"
     }
 }
+
 
 bootBuildImage{
     builder = "docker.io/paketobuildpacks/builder-jammy-base"
