@@ -4,7 +4,7 @@ plugins {
     id 'io.spring.dependency-management' version '1.1.4'
 }
 
-group = 'com.example'
+group = 'am.itspace'
 version = '0.0.1-SNAPSHOT'
 
 java {
@@ -33,13 +33,11 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
     implementation 'org.flywaydb:flyway-core'
-
     runtimeOnly 'org.postgresql:postgresql'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.boot:spring-boot-starter-webflux'
     testImplementation 'org.testcontainers:postgresql'
-
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 }
 
@@ -61,13 +59,13 @@ dependencyManagement {
 bootBuildImage {
     builder = "docker.io/paketobuildpacks/builder-jammy-base"
     imageName = "${project.name}"
-    environment = ["BP_JVM_VERSION": "17"]
+    environment = ["BP_JVM_VERSION": "21"]
 
     docker {
         publishRegistry {
-            username = project.findProperty("registryUsername")
-            password = project.findProperty("registryToken")
-            url = project.findProperty("registryUrl")
+            username = project.findProperty("registryUsername") // Replace with your registry username
+            password = project.findProperty("registryToken") // Replace with your registry token
+            url = project.findProperty("registryUrl") // Replace with your registry URL
         }
     }
 }
