@@ -58,14 +58,14 @@ dependencyManagement {
 
 bootBuildImage {
     builder = "docker.io/paketobuildpacks/builder-jammy-base"
-    imageName = "my-registry.com/my-app:${project.version}" // Replace with your image reference
-    environment = ["BP_JVM_VERSION": "21"]
+    imageName = "${project.name}"
+    environment = ["BP_JVM_VERSION": "17"]
 
     docker {
         publishRegistry {
-            username = project.findProperty("registryUsername") // Replace with your registry username
-            password = project.findProperty("registryToken") // Replace with your registry token
-            url = project.findProperty("registryUrl") // Replace with your registry URL
+            username = project.findProperty("registryUsername")
+            password = project.findProperty("registryToken")
+            url = project.findProperty("registryUrl")
         }
     }
 }
