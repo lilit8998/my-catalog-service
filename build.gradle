@@ -58,7 +58,7 @@ dependencyManagement {
 
 bootBuildImage {
     builder = "docker.io/paketobuildpacks/builder-jammy-base"
-    imageName = "my-registry.com/my-app:latest"
+    imageName = "my-registry.com/my-app:latest" // Update with your desired image reference
     environment = ["BP_JVM_VERSION": "17"]
 
     docker {
