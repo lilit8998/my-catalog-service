@@ -59,14 +59,19 @@ dependencyManagement {
 
 bootBuildImage {
     builder = "docker.io/paketobuildpacks/builder-jammy-base"
-    imageName = "my-registry.com/my-app" // Set your desired image name here
-    environment = ["BP_JVM_VERSION": "21"]
+    imageName = "my-registry.com/my-app:latest" // Set your desired image name here, including the tag
+    environment = ["BP_JVM_VERSION": "21"] // Specify the JVM version for the build
 
     docker {
+        // Configure registry authentication
         publishRegistry {
+            // Set the registry username (ensure it's defined in your Gradle project)
             username = project.findProperty("registryUsername")
+            // Set the registry password/token (ensure it's defined in your Gradle project)
             password = project.findProperty("registryToken")
+            // Set the registry URL (ensure it's defined in your Gradle project)
             url = project.findProperty("registryUrl")
         }
     }
 }
+
